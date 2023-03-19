@@ -1,0 +1,56 @@
+# Ignore target directory in each module
+**/target/
+**/build/
+**/out/
+
+# Ignore IntelliJ directories
+*.iml
+*.iws
+*.ipr
+.idea/
+.idea_modules/
+
+# Ignore eclipse directories
+.classpath
+.project
+.settings/
+.metadata/
+bin/
+tmp/
+.history/
+
+# Ignore maven files
+*/.classpath
+*/.factorypath
+*/.settings/
+*/.project
+/target/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Ignore gradle files
+.gradle/
+.build/
+gradlew
+gradle.properties
+gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.jar
+
+# Ignore logs and other generated files
+/application.log
+/application.log.*
+!/*.jar
+/*.log
+/*.pid
+
+# Ignore OS-generated files
+.DS_Store
+Thumbs.db
+
+# Ignore JNI generated files
+*.h
+*.c
+*.class
+
+# Ignore git files
+.gitignore
+*.lock

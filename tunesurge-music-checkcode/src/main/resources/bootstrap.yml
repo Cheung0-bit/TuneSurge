@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: checkcode
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      discovery:
+        namespace: 71296e2c-1c71-47d2-b304-fd15a1f7e9c6
+        group: tunesurge-music-project
+      config:
+        namespace: 71296e2c-1c71-47d2-b304-fd15a1f7e9c6
+        group: tunesurge-music-project
+        file-extension: yaml
+        refresh-enabled: true
+        shared-configs:
+          - data-id: swagger-${spring.profiles.active}.yaml
+            group: tunesurge-music-common
+            refresh: true
+
+  profiles:
+    active: dev
