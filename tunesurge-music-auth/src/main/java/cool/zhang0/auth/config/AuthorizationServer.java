@@ -31,7 +31,11 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
     private AuthenticationManager authenticationManager;
 
 
-    //客户端详情服务
+    /**
+     * 客户端详情服务
+     * @param clients
+     * @throws Exception
+     */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients)
             throws Exception {

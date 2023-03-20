@@ -69,7 +69,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // Gateway中进行身份登录认证，这里全部放行
         http
                 .authorizeRequests()
-                .anyRequest().permitAll();
+                .anyRequest().permitAll()
+                .and()
+                .formLogin().successForwardUrl("/login-success");;
 
     }
 }

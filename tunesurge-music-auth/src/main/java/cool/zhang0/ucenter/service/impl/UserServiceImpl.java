@@ -53,15 +53,6 @@ public class UserServiceImpl implements UserDetailsService {
         return getUserPrincipal(tsUserExt);
     }
 
-    /**
-     * 根据XcUserExt对象构造一个UserDetails对象
-     *
-     * @param user 用户id，主键
-     * @return com.xuecheng.ucenter.model.po.XcUser 用户信息
-     * @description 查询用户信息
-     * @author Mr.M
-     * @date 2022/9/29 12:19
-     */
     public UserDetails getUserPrincipal(TsUserExt user) {
 
         //权限列表，存放的用户权限
