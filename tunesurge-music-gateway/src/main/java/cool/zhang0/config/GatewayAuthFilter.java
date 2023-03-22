@@ -92,7 +92,6 @@ public class GatewayAuthFilter implements GlobalFilter, Ordered {
             log.info("认证令牌无效: {}", token);
             return buildReturnMono("认证令牌无效", exchange);
         }
-
     }
 
     /**

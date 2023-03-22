@@ -9,35 +9,35 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.R
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 
- /**
-  * @author zhanglin
-  */
- @Configuration
- @EnableResourceServer
- @EnableGlobalMethodSecurity(securedEnabled = true,prePostEnabled = true)
- public class ResouceServerConfig extends ResourceServerConfigurerAdapter {
+/**
+ * @author zhanglin
+ */
+@Configuration
+@EnableResourceServer
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+public class ResouceServerConfig extends ResourceServerConfigurerAdapter {
 
 
-  //资源服务标识
-  public static final String RESOURCE_ID = "tunesurge";
+    //资源服务标识
+    public static final String RESOURCE_ID = "tunesurge";
 
-  @Autowired
-  TokenStore tokenStore;
+    @Autowired
+    TokenStore tokenStore;
 
-  @Override
-  public void configure(ResourceServerSecurityConfigurer resources) {
-   resources.resourceId(RESOURCE_ID)//资源 id
-           .tokenStore(tokenStore)
-           .stateless(true);
-  }
+    @Override
+    public void configure(ResourceServerSecurityConfigurer resources) {
+        resources.resourceId(RESOURCE_ID)//资源 id
+                .tokenStore(tokenStore)
+                .stateless(true);
+    }
 
- @Override
- public void configure(HttpSecurity http) throws Exception {
-  http.csrf().disable()
-          .authorizeRequests()
+    @Override
+    public void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+                .authorizeRequests()
 //                .antMatchers("/r/**","/course/**").authenticated()//所有/r/**的请求必须认证通过
-          .anyRequest().permitAll()
-  ;
- }
+                .anyRequest().permitAll()
+        ;
+    }
 
- }
+}

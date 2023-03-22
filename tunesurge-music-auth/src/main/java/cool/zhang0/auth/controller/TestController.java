@@ -19,10 +19,8 @@ public class TestController {
 
     @GetMapping("/doLogin")
     @ApiOperation("登录")
-//    @PreAuthorize("hasAuthority('test')")
+    @PreAuthorize("hasAuthority('test' )")
     public String doLogin() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        System.out.println(principal);
         return "Login Success";
     }
 

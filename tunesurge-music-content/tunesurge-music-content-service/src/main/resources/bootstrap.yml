@@ -1,7 +1,6 @@
-#微服务配置
 spring:
   application:
-    name: content-api
+    name: content-service
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848
@@ -13,13 +12,6 @@ spring:
         group: tunesurge-music-project
         file-extension: yaml
         refresh-enabled: true
-        extension-configs:
-          - data-id: content-service-${spring.profiles.active}.yaml
-            group: tunesurge-music-project
-            refresh: true
-        shared-configs:
-          - data-id: swagger-${spring.profiles.active}.yaml
-            group: tunesurge-music-common
-            refresh: true
+  #profiles默认为dev
   profiles:
     active: dev
