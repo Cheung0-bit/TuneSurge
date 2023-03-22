@@ -1,12 +1,11 @@
 package cool.zhang0.content.model.po;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import lombok.Data;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.type.Alias;
 
 /**
@@ -83,6 +82,9 @@ public class MvBase implements Serializable {
      * 发布状态
      */
     private String status;
+
+    @TableLogic
+    private String isDelete;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;

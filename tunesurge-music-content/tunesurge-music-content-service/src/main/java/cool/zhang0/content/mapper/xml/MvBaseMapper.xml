@@ -5,19 +5,19 @@
 <mapper namespace="cool.zhang0.content.mapper.MvBaseMapper">
 
     <resultMap id="BaseResultMap" type="MvBase">
-            <id property="id" column="id" jdbcType="BIGINT"/>
-            <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="tags" column="tags" jdbcType="VARCHAR"/>
-            <result property="typeOne" column="type_one" jdbcType="VARCHAR"/>
-            <result property="typeTwo" column="type_two" jdbcType="VARCHAR"/>
-            <result property="typeThree" column="type_three" jdbcType="VARCHAR"/>
-            <result property="description" column="description" jdbcType="VARCHAR"/>
-            <result property="pic" column="pic" jdbcType="VARCHAR"/>
-            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
-            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="createUser" column="create_user" jdbcType="BIGINT"/>
-            <result property="auditStatus" column="audit_status" jdbcType="CHAR"/>
-            <result property="status" column="status" jdbcType="CHAR"/>
+        <id property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="tags" column="tags" jdbcType="VARCHAR"/>
+        <result property="typeOne" column="type_one" jdbcType="VARCHAR"/>
+        <result property="typeTwo" column="type_two" jdbcType="VARCHAR"/>
+        <result property="typeThree" column="type_three" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="pic" column="pic" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="createUser" column="create_user" jdbcType="BIGINT"/>
+        <result property="auditStatus" column="audit_status" jdbcType="CHAR"/>
+        <result property="status" column="status" jdbcType="CHAR"/>
     </resultMap>
 
     <sql id="Base_Column_List">
