@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: media-api
+  cloud:
+    nacos:
+      server-addr: 127.0.0.1:8848
+      discovery:
+        namespace: 71296e2c-1c71-47d2-b304-fd15a1f7e9c6
+        group: tunesurge-music-project
+      config:
+        namespace: 71296e2c-1c71-47d2-b304-fd15a1f7e9c6
+        group: tunesurge-music-project
+        file-extension: yaml
+        refresh-enabled: true
+        extension-configs:
+          - data-id: media-service-${spring.profiles.active}.yaml
+            group: tunesurge-music-project
+            refresh: true
+        shared-configs:
+          - data-id: swagger-${spring.profiles.active}.yaml
+            group: tunesurge-music-common
+            refresh: true
+  #profiles默认为dev
+  profiles:
+    active: dev
