@@ -17,6 +17,7 @@
         <module>tunesurge-music-checkcode</module>
         <module>tunesurge-music-gateway</module>
         <module>tunesurge-music-media</module>
+        <module>tunesurge-music-message-sdk</module>
     </modules>
     <packaging>pom</packaging>
 
