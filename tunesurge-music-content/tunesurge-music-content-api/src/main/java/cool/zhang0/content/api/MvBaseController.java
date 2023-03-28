@@ -2,6 +2,7 @@ package cool.zhang0.content.api;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import cool.zhang0.content.model.dto.*;
+import cool.zhang0.content.model.po.MvAudit;
 import cool.zhang0.content.model.po.MvBase;
 import cool.zhang0.content.service.MvBaseService;
 import cool.zhang0.content.util.SecurityUtil;
@@ -10,6 +11,7 @@ import cool.zhang0.model.PageParams;
 import cool.zhang0.model.RestResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +48,7 @@ public class MvBaseController {
         return mvBaseService.queryMvBaseList(params, queryMvBaseParams);
     }
 
-    @ApiOperation("添加MV作品接口")
+    @ApiOperation("添加MV作品接口，并提交审核")
     @PostMapping
     public RestResponse<MvBase> createMvBase(@RequestBody @Validated(ValidationGroups.Insert.class) AddMvDto addMvDto) {
         SecurityUtil.TsUser tsUser = SecurityUtil.getUser();
@@ -55,7 +57,7 @@ public class MvBaseController {
         return mvBaseService.createMvBase(addMvDto);
     }
 
-    @ApiOperation("修改MV作品接口")
+    @ApiOperation("修改MV作品接口，并提交审核")
     @PutMapping
     public RestResponse<MvBase> updateMvBase(@RequestBody @Validated(ValidationGroups.Update.class) UpdateMvDto updateMvDto) {
         SecurityUtil.TsUser tsUser = SecurityUtil.getUser();
@@ -91,6 +93,16 @@ public class MvBaseController {
     public RestResponse<MvBase> getById(@PathVariable("mvId") Long mvId) {
         MvBase mvBase = mvBaseService.getById(mvId);
         return RestResponse.success(mvBase);
+    }
+
+    @ApiOperation("审核MV作品")
+    @PostMapping("/audit")
+    @PreAuthorize("hasAuthority('ts_sys_mv_audit')")
+    public RestResponse<MvAudit> doAudit(@RequestBody @Validated AuditDto auditDto) {
+        SecurityUtil.TsUser tsUser = SecurityUtil.getUser();
+        assert tsUser != null;
+        auditDto.setAuditPeople(tsUser.getId());
+        return mvBaseService.auditMv(auditDto);
     }
 
 

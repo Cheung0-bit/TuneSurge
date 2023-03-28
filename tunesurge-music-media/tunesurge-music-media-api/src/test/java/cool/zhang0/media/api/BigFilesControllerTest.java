@@ -1,7 +1,6 @@
 package cool.zhang0.media.api;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import cool.zhang0.model.RestResponse;
 import okhttp3.*;
 import org.junit.jupiter.api.Test;

@@ -32,17 +32,20 @@ public class AddMvDto {
      * 一级分类
      */
     @NotEmpty(message = "一级分类不可为空")
+    @ApiModelProperty(value = "一级分类ID", required = true)
     private String typeOne;
 
     /**
      * 二级分类
      */
     @NotEmpty(message = "二级分类不可为空")
+    @ApiModelProperty(value = "二级分类ID", required = true)
     private String typeTwo;
 
     /**
      * 三级分类
      */
+    @ApiModelProperty(value = "三级分类ID", required = false)
     private String typeThree;
 
     /**
@@ -50,17 +53,27 @@ public class AddMvDto {
      */
     @NotEmpty(message = "MV描述不可为空")
     @Size(message = "长度控制在200以内", max = 200)
+    @ApiModelProperty(value = "MV作品描述", required = true)
     private String description;
 
     /**
      * 封面图片
      */
     @NotEmpty(message = "封面图不可为空")
+    @ApiModelProperty(value = "封面图片", required = true)
     private String pic;
+
+    /**
+     * 视频ID
+     */
+    @NotEmpty(message = "视频文件ID不可为空")
+    @ApiModelProperty(value = "视频文件ID", required = true)
+    private String videoId;
 
     /**
      * 创建人
      */
+    @ApiModelProperty(value = "创建人", required = true)
     private Long createUser;
 
 }

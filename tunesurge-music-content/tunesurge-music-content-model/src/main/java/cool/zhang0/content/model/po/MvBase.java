@@ -4,16 +4,16 @@ import com.baomidou.mybatisplus.annotation.*;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
 import lombok.Data;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.type.Alias;
 
 /**
- * 
  * @author zhanglin
  * @TableName mv_base
  */
-@TableName(value ="mv_base")
+@TableName(value = "mv_base")
 @Data
 @Alias("MvBase")
 public class MvBase implements Serializable {
@@ -57,6 +57,11 @@ public class MvBase implements Serializable {
      * 封面图片
      */
     private String pic;
+
+    /**
+     * 封面图片
+     */
+    private String videoId;
 
     /**
      * 创建时间

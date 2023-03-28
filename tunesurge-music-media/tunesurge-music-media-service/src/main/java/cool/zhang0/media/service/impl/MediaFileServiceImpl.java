@@ -26,7 +26,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.io.*;
@@ -244,6 +243,7 @@ public class MediaFileServiceImpl implements MediaFileService {
      * @param objectName
      * @return
      */
+    @Override
     public File downloadFileFromMinIO(File file, String bucket, String objectName) {
 
         GetObjectArgs getObjectArgs = GetObjectArgs.builder().bucket(bucket).object(objectName).build();
@@ -398,6 +398,7 @@ public class MediaFileServiceImpl implements MediaFileService {
      * @param bucket
      * @param objectName
      */
+    @Override
     public void addMediaFilesToMinIo(String filePath, String bucket, String objectName) {
         try {
             UploadObjectArgs uploadObjectArgs = UploadObjectArgs.builder()

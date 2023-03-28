@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cool.zhang0.content.mapper.MvPublishPreMapper">
+
+    <resultMap id="BaseResultMap" type="MvPublishPre">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="mvName" column="mv_name" jdbcType="VARCHAR"/>
+            <result property="mvTags" column="mv_tags" jdbcType="VARCHAR"/>
+            <result property="typeOneName" column="type_one_name" jdbcType="VARCHAR"/>
+            <result property="typeTwoName" column="type_two_name" jdbcType="VARCHAR"/>
+            <result property="typeThreeName" column="type_three_name" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="VARCHAR"/>
+            <result property="pic" column="pic" jdbcType="VARCHAR"/>
+            <result property="videoId" column="video_id" jdbcType="VARCHAR"/>
+            <result property="pushTime" column="push_time" jdbcType="TIMESTAMP"/>
+            <result property="pushUser" column="push_user" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,mv_name,mv_tags,
+        type_one_name,type_two_name,type_three_name,
+        description,pic,video_id,
+        push_time,push_user
+    </sql>
+</mapper>

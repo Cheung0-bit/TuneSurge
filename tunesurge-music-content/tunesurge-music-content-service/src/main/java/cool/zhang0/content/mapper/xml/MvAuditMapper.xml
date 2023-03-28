@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cool.zhang0.content.mapper.MvAuditMapper">
+
+    <resultMap id="BaseResultMap" type="MvAudit">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="mvId" column="mv_id" jdbcType="BIGINT"/>
+            <result property="auditMind" column="audit_mind" jdbcType="VARCHAR"/>
+            <result property="auditStatus" column="audit_status" jdbcType="CHAR"/>
+            <result property="auditPeople" column="audit_people" jdbcType="BIGINT"/>
+            <result property="auditTime" column="audit_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,mv_id,audit_mind,
+        audit_status,audit_people,audit_time
+    </sql>
+</mapper>

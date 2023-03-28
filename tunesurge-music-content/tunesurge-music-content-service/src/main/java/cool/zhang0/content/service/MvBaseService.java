@@ -3,9 +3,12 @@ package cool.zhang0.content.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import cool.zhang0.content.model.dto.*;
+import cool.zhang0.content.model.po.MvAudit;
 import cool.zhang0.content.model.po.MvBase;
+import cool.zhang0.exception.TuneSurgeException;
 import cool.zhang0.model.PageParams;
 import cool.zhang0.model.RestResponse;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <MV基本信息>
@@ -29,6 +32,7 @@ public interface MvBaseService extends IService<MvBase> {
      * @param addMvDto
      * @return
      */
+    @Transactional(rollbackFor = TuneSurgeException.class)
     RestResponse<MvBase> createMvBase(AddMvDto addMvDto);
 
     /**
@@ -36,6 +40,7 @@ public interface MvBaseService extends IService<MvBase> {
      * @param updateMvDto
      * @return
      */
+    @Transactional(rollbackFor = TuneSurgeException.class)
     RestResponse<MvBase> updateMvBase(UpdateMvDto updateMvDto);
 
     /**
@@ -51,4 +56,11 @@ public interface MvBaseService extends IService<MvBase> {
      * @return
      */
     RestResponse<String> recoverMvBase(RecoverMvDto recoverMvDto);
+
+    /**
+     * 对MV作品进行审核
+     * @param auditDto
+     * @return
+     */
+    RestResponse<MvAudit> auditMv(AuditDto auditDto);
 }

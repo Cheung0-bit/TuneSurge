@@ -10,7 +10,6 @@ import javax.validation.groups.Default;
  */
 public class ValidationGroups {
 
-
     /**
      * 添加校验
      */
