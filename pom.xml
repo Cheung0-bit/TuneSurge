@@ -18,6 +18,7 @@
         <module>tunesurge-music-gateway</module>
         <module>tunesurge-music-media</module>
         <module>tunesurge-music-message-sdk</module>
+        <module>tunesurge-music-search</module>
     </modules>
     <packaging>pom</packaging>
 

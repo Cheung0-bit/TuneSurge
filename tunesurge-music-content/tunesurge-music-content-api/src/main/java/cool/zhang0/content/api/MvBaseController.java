@@ -33,7 +33,7 @@ public class MvBaseController {
 
     @ApiOperation("我的MV作品列表接口")
     @PostMapping("/list")
-    public RestResponse<Page<MvBase>> list(PageParams params, @RequestParam("mvName") String mvName) {
+    public RestResponse<Page<MvBase>> list(PageParams params, @RequestParam(value = "mvName", required = false) String mvName) {
 
         // 当前登录用户
         SecurityUtil.TsUser tsUser = SecurityUtil.getUser();
