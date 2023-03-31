@@ -14,21 +14,6 @@ import java.util.List;
 public class SearchPageResultDto<T> {
 
     /**
-     * 一级分类列表
-     */
-    private List<String> typeOneList;
-
-    /**
-     * 二级分类列表
-     */
-    private List<String> typeTwoList;
-
-    /**
-     * 三级分类列表
-     */
-    private List<String> typeThreeList;
-
-    /**
      * 数据列表
      */
     private List<T> items;

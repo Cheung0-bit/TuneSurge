@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 @RequestMapping("/index")
 public class MvIndexController {
 
-    @Value("${elasticsearch.course.index}")
+    @Value("${elasticsearch.mv.index}")
     private String mvIndexStore;
 
     @Resource
