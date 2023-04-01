@@ -62,5 +62,6 @@ public interface MvBaseService extends IService<MvBase> {
      * @param auditDto
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     RestResponse<MvAudit> auditMv(AuditDto auditDto);
 }

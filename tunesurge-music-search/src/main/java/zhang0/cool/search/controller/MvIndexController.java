@@ -27,7 +27,7 @@ public class MvIndexController {
     @Resource
     IndexService indexService;
 
-    @ApiOperation("添加课程索引")
+    @ApiOperation("添加MV索引")
     @PostMapping("mv")
     public Boolean add(@RequestBody MvIndex mvIndex) {
 
@@ -36,13 +36,13 @@ public class MvIndexController {
             TuneSurgeException.cast("MV的id为空");
         }
         Boolean result = indexService.addMvIndex(mvIndexStore, String.valueOf(id), mvIndex);
-        if (!result) {
-            TuneSurgeException.cast("添加课程索引失败");
+        if (!Boolean.TRUE.equals(result)) {
+            TuneSurgeException.cast("添加MV索引失败");
         }
         return true;
     }
 
-    @ApiOperation("添加课程索引")
+    @ApiOperation("修改MV索引")
     @PutMapping("mv")
     public Boolean update(@RequestBody MvIndex mvIndex) {
 
@@ -52,12 +52,12 @@ public class MvIndexController {
         }
         Boolean result = indexService.updateMvIndex(mvIndexStore, String.valueOf(id), mvIndex);
         if (!result) {
-            TuneSurgeException.cast("添加课程索引失败");
+            TuneSurgeException.cast("修改MV索引失败");
         }
         return true;
     }
 
-    @ApiOperation("添加课程索引")
+    @ApiOperation("删除MV索引")
     @DeleteMapping("mv")
     public Boolean delete(@RequestBody MvIndex mvIndex) {
 
@@ -67,7 +67,7 @@ public class MvIndexController {
         }
         Boolean result = indexService.deleteMvIndex(mvIndexStore, String.valueOf(id));
         if (!result) {
-            TuneSurgeException.cast("添加课程索引失败");
+            TuneSurgeException.cast("删除MV索引失败");
         }
         return true;
     }

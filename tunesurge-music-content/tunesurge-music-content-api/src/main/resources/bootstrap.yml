@@ -21,5 +21,11 @@ spring:
           - data-id: swagger-${spring.profiles.active}.yaml
             group: tunesurge-music-common
             refresh: true
+          - data-id: redis-${spring.profiles.active}.yaml
+            group: tunesurge-music-common
+            refresh: true
+          - data-id: feign-${spring.profiles.active}.yaml
+            group: tunesurge-music-common
+            refresh: true
   profiles:
     active: dev
