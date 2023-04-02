@@ -1,4 +1,4 @@
-package cool.zhang0.content.model.dto;
+package cool.zhang0.ucenter.model.dto;
 
 import io.swagger.annotations.ApiModel;
 import lombok.Data;

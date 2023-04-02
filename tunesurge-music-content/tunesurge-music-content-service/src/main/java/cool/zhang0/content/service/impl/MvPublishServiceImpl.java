@@ -3,14 +3,20 @@ package cool.zhang0.content.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cool.zhang0.content.feignclient.SearchServiceClient;
+import cool.zhang0.content.feignclient.UserLikedClient;
 import cool.zhang0.content.feignclient.model.MvIndex;
 import cool.zhang0.content.mapper.MvBaseMapper;
 import cool.zhang0.content.mapper.MvPublishMapper;
 import cool.zhang0.content.mapper.MvPublishPreMapper;
+import cool.zhang0.content.model.dto.LikedUserDto;
+import cool.zhang0.content.model.dto.MvLikesUserDto;
+import cool.zhang0.content.model.dto.ScrollResult;
 import cool.zhang0.content.model.po.MvBase;
 import cool.zhang0.content.model.po.MvPublish;
 import cool.zhang0.content.model.po.MvPublishPre;
@@ -30,9 +36,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * <MV发布>
@@ -42,7 +48,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @Service
-public class MvPublishServiceImpl implements MvPublishService {
+public class MvPublishServiceImpl extends ServiceImpl<MvPublishMapper, MvPublish> implements MvPublishService {
 
     @Resource
     MvBaseMapper mvBaseMapper;
@@ -64,6 +70,9 @@ public class MvPublishServiceImpl implements MvPublishService {
 
     @Resource
     RedissonClient redissonClient;
+
+    @Resource
+    UserLikedClient userLikedClient;
 
     @Override
     public RestResponse<String> publish(Long mvId) {
@@ -176,6 +185,53 @@ public class MvPublishServiceImpl implements MvPublishService {
 
     @Override
     public RestResponse<Page<MvPublish>> queryHotMv(PageParams pageParams) {
+        return null;
+    }
+
+    @Override
+    public RestResponse<String> likeMv(Long userId, Long mvId) {
+        // 判断当前用户是否已经点赞
+        String key = "mv:liked:" + mvId;
+        Double score = stringRedisTemplate.opsForZSet().score(key, userId.toString());
+        if (score == null) {
+            // 未点赞 执行点赞
+            // 数据库点赞数+1
+            boolean update = update().setSql("liked = liked + 1").eq("id", mvId).update();
+            // 保存用户到redis的set集合 ZADD KEY VALUE SCORE
+            if (update) {
+                stringRedisTemplate.opsForZSet().add(key, userId.toString(), System.currentTimeMillis());
+            }
+        } else {
+            // 已经点赞 则取消点赞
+            // 数据库点赞数-1
+            boolean update = update().setSql("liked = liked - 1").eq("id", mvId).update();
+            if (update) {
+                // 将用户从set中移除
+                stringRedisTemplate.opsForZSet().remove(key, userId.toString());
+            }
+        }
+        return RestResponse.success();
+    }
+
+    @Override
+    public RestResponse<List<LikedUserDto>> queryMvLikes(Long mvId) {
+
+        String key = "mv:liked:" + mvId;
+        // 查询top5的点赞用户 ZRANGE KEY MIN MAX
+        Set<String> range = stringRedisTemplate.opsForZSet().range(key, 0, 4);
+        if (range == null || range.isEmpty()) {
+            return RestResponse.success(Collections.emptyList());
+        }
+        // 解析用户ID
+        List<Long> userIds = range.stream().map(Long::valueOf).collect(Collectors.toList());
+        String userIdStr = StrUtil.join(",", userIds);
+        // 根据用户ID查询用户
+        List<LikedUserDto> likedUserDtos = userLikedClient.likedSorted(new MvLikesUserDto(userIds, userIdStr));
+        return RestResponse.success(likedUserDtos);
+    }
+
+    @Override
+    public RestResponse<ScrollResult> queryMvOfFollow(Long max, Integer offset) {
         return null;
     }
 

@@ -22,6 +22,6 @@ public interface SearchServiceClient {
      * @return
      */
     @PostMapping("/index/mv")
-    public Boolean add(@RequestBody MvIndex mvIndex);
+    Boolean add(@RequestBody MvIndex mvIndex);
 
 }

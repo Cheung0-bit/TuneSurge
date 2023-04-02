@@ -69,14 +69,15 @@ public interface MvPublishService {
 
     /**
      * MV点赞
-     *
+     * @param userId
      * @param mvId
      * @return
      */
-    RestResponse<String> likeMv(Long mvId);
+    RestResponse<String> likeMv(Long userId, Long mvId);
 
     /**
      * 查询点赞用户
+     *
      * @param mvId
      * @return
      */
@@ -84,6 +85,7 @@ public interface MvPublishService {
 
     /**
      * Feed流推模式 获取关注UP主的新发布作品 滚动分页
+     *
      * @param max
      * @param offset
      * @return
