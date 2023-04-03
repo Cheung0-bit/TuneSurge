@@ -79,5 +79,8 @@ public class MvPublish implements Serializable {
     private String status;
 
     @TableField(exist = false)
+    private Boolean isLike = false;
+
+    @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 }

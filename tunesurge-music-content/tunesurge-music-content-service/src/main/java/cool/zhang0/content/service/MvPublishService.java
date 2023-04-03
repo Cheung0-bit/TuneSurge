@@ -21,11 +21,12 @@ public interface MvPublishService {
     /**
      * MV发布
      *
+     * @param userId
      * @param mvId
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    RestResponse<String> publish(Long mvId);
+    RestResponse<String> publish(Long userId, Long mvId);
 
     /**
      * MV建立索引
@@ -69,6 +70,7 @@ public interface MvPublishService {
 
     /**
      * MV点赞
+     *
      * @param userId
      * @param mvId
      * @return
@@ -86,10 +88,11 @@ public interface MvPublishService {
     /**
      * Feed流推模式 获取关注UP主的新发布作品 滚动分页
      *
+     * @param userId
      * @param max
      * @param offset
      * @return
      */
-    RestResponse<ScrollResult> queryMvOfFollow(Long max, Integer offset);
+    RestResponse<ScrollResult> queryMvOfFollow(Long userId, Long max, Integer offset);
 
 }

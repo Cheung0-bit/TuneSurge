@@ -1,38 +1,39 @@
 package cool.zhang0.content.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cool.zhang0.content.feignclient.SearchServiceClient;
-import cool.zhang0.content.feignclient.UserLikedClient;
+import cool.zhang0.content.feignclient.AuthServiceClient;
 import cool.zhang0.content.feignclient.model.MvIndex;
 import cool.zhang0.content.mapper.MvBaseMapper;
 import cool.zhang0.content.mapper.MvPublishMapper;
 import cool.zhang0.content.mapper.MvPublishPreMapper;
+import cool.zhang0.content.mapper.TsFollowMapper;
 import cool.zhang0.content.model.dto.LikedUserDto;
 import cool.zhang0.content.model.dto.MvLikesUserDto;
 import cool.zhang0.content.model.dto.ScrollResult;
 import cool.zhang0.content.model.po.MvBase;
 import cool.zhang0.content.model.po.MvPublish;
 import cool.zhang0.content.model.po.MvPublishPre;
+import cool.zhang0.content.model.po.TsFollow;
 import cool.zhang0.content.service.MvPublishService;
+import cool.zhang0.content.service.TsFollowService;
 import cool.zhang0.exception.TuneSurgeException;
 import cool.zhang0.messagesdk.model.po.MqMessage;
 import cool.zhang0.messagesdk.service.MqMessageService;
 import cool.zhang0.model.PageParams;
 import cool.zhang0.model.RestResponse;
-import groovy.lang.GString;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -72,10 +73,13 @@ public class MvPublishServiceImpl extends ServiceImpl<MvPublishMapper, MvPublish
     RedissonClient redissonClient;
 
     @Resource
-    UserLikedClient userLikedClient;
+    TsFollowMapper tsFollowMapper;
+
+    @Resource
+    AuthServiceClient userLikedClient;
 
     @Override
-    public RestResponse<String> publish(Long mvId) {
+    public RestResponse<String> publish(Long userId, Long mvId) {
         // 约束校验
         // 是否提交审核或审核通过
         MvBase mvBase = mvBaseMapper.selectById(mvId);
@@ -93,6 +97,20 @@ public class MvPublishServiceImpl extends ServiceImpl<MvPublishMapper, MvPublish
         saveMvPublishMessage(mvId);
         // 删除MV预发布表记录
         mvPublishPreMapper.deleteById(mvId);
+        // 查询MV作者的所有粉丝 执行Feed流推送
+        LambdaQueryWrapper<TsFollow> tsFollowLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        tsFollowLambdaQueryWrapper.eq(TsFollow::getFollowUserId, userId);
+        tsFollowLambdaQueryWrapper.select(TsFollow::getUserId);
+        List<TsFollow> tsFollows = tsFollowMapper.selectList(tsFollowLambdaQueryWrapper);
+        tsFollows.forEach(tsFollow -> {
+            // 获取粉丝ID
+            Long id = tsFollow.getUserId();
+            final String key = "mv:feed:" + id;
+            stringRedisTemplate.opsForZSet().add(key, mvId.toString(), System.currentTimeMillis());
+        });
+        // 消息异步执行 Email通知粉丝
+
+
         return RestResponse.success();
     }
 
@@ -185,7 +203,8 @@ public class MvPublishServiceImpl extends ServiceImpl<MvPublishMapper, MvPublish
 
     @Override
     public RestResponse<Page<MvPublish>> queryHotMv(PageParams pageParams) {
-        return null;
+        Page<MvPublish> page = query().orderByDesc("liked").page(new Page<>(pageParams.getPageNo(), pageParams.getPageSize()));
+        return RestResponse.success(page);
     }
 
     @Override
@@ -231,8 +250,46 @@ public class MvPublishServiceImpl extends ServiceImpl<MvPublishMapper, MvPublish
     }
 
     @Override
-    public RestResponse<ScrollResult> queryMvOfFollow(Long max, Integer offset) {
-        return null;
+    public RestResponse<ScrollResult> queryMvOfFollow(Long userId, Long max, Integer offset) {
+
+        // 先从Redis中查看收件箱 ZREVRANGEBYSCORE key Max Min LIMIT offset count
+        final String key = "mv:feed:" + userId;
+        Set<ZSetOperations.TypedTuple<String>> typedTuples = stringRedisTemplate.opsForZSet()
+                .reverseRangeByScoreWithScores(key, 0, max, offset, 2);
+        // 3.非空判断
+        if (typedTuples == null || typedTuples.isEmpty()) {
+            return RestResponse.success();
+        }
+        // 4.解析数据
+        List<Long> ids = new ArrayList<>(typedTuples.size());
+        // 最小时间戳的记录
+        long minTime = 0;
+        // offset 偏移量
+        int os = 1;
+        for (ZSetOperations.TypedTuple<String> tuple : typedTuples) {
+            // 4.1.获取id
+            ids.add(Long.valueOf(Objects.requireNonNull(tuple.getValue())));
+            // 4.2.获取分数(时间戳）
+            long time = Objects.requireNonNull(tuple.getScore()).longValue();
+            if (time == minTime) {
+                os++;
+            } else {
+                minTime = time;
+                os = 1;
+            }
+        }
+
+        // 根据ID查出MV
+        final String idStr = StrUtil.join(",", ids);
+        List<MvPublish> mvPublishList = query().in("id", ids).last("ORDER BY FIELD(id," + idStr + ")").list();
+
+        // 构建返回内容
+        ScrollResult scrollResult = new ScrollResult();
+        scrollResult.setList(mvPublishList);
+        scrollResult.setOffset(os);
+        scrollResult.setMinTime(minTime);
+        return RestResponse.success(scrollResult);
+
     }
 
     private void saveMvPublishMessage(Long mvId) {
