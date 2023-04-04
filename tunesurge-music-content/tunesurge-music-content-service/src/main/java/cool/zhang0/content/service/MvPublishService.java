@@ -26,7 +26,7 @@ public interface MvPublishService {
      * @return
      */
     @Transactional(rollbackFor = Exception.class)
-    RestResponse<String> publish(Long userId, Long mvId);
+    RestResponse<String> publish(Long userId, String nickname, Long mvId);
 
     /**
      * MV建立索引

@@ -35,6 +35,13 @@ public class AuthServiceFallbackFactory implements FallbackFactory<AuthServiceCl
                 log.error("AuthServiceFallbackFactory");
                 return Collections.emptyList();
             }
+
+            @Override
+            public String[] getEmailList(List<Long> userIdList) {
+                throwable.printStackTrace();
+                log.error("AuthServiceFallbackFactory");
+                return new String[]{};
+            }
         };
 
     }

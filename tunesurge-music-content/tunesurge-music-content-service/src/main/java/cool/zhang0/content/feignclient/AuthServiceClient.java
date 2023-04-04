@@ -36,4 +36,12 @@ public interface AuthServiceClient {
      */
     @PostMapping("/getUserList")
     List<CommonFollowUserDto> getUserList(@RequestParam("userIds") String userIds);
+
+    /**
+     * 获取待发送邮件列表列表
+     * @param userIdList
+     * @return
+     */
+    @PostMapping("/getEmailList")
+    String[] getEmailList(@RequestParam("userIdList") List<Long> userIdList);
 }

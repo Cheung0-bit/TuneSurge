@@ -2,6 +2,7 @@ package cool.zhang0.auth.controller;
 
 import cn.hutool.core.bean.BeanUtil;
 import cool.zhang0.ucenter.model.dto.CommonFollowUserDto;
+import cool.zhang0.ucenter.model.po.TsUser;
 import cool.zhang0.ucenter.service.TsUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,6 +35,12 @@ public class FollowController {
         List<Long> collect = Arrays.stream(split).map(Long::valueOf).collect(Collectors.toList());
         return tsUserService.listByIds(collect).stream().map(tsUser -> BeanUtil.copyProperties(tsUser, CommonFollowUserDto.class)).collect(Collectors.toList());
 
+    }
+
+    @PostMapping("/getEmailList")
+    @ApiOperation("获取待发送邮件列表列表")
+    public String[] getEmailList(@RequestParam("userIdList") List<Long> userIdList) {
+        return tsUserService.listByIds(userIdList).stream().map(TsUser::getEmail).toArray(String[]::new);
     }
 
 }

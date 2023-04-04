@@ -33,7 +33,7 @@ public class MvPublishController {
     public RestResponse<String> mvPublish(@PathVariable("mvId") Long mvId) {
         SecurityUtil.TsUser tsUser = SecurityUtil.getUser();
         assert tsUser != null;
-        return mvPublishService.publish(tsUser.getId(), mvId);
+        return mvPublishService.publish(tsUser.getId(), tsUser.getNickname(), mvId);
     }
 
     @ApiOperation("通过ID查询MV")

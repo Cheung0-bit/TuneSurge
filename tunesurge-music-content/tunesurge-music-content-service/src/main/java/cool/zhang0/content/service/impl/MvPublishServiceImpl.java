@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cool.zhang0.content.feignclient.SearchServiceClient;
 import cool.zhang0.content.feignclient.AuthServiceClient;
 import cool.zhang0.content.feignclient.model.MvIndex;
+import cool.zhang0.content.listener.EmailPublishMessageListener;
 import cool.zhang0.content.mapper.MvBaseMapper;
 import cool.zhang0.content.mapper.MvPublishMapper;
 import cool.zhang0.content.mapper.MvPublishPreMapper;
@@ -16,12 +17,13 @@ import cool.zhang0.content.mapper.TsFollowMapper;
 import cool.zhang0.content.model.dto.LikedUserDto;
 import cool.zhang0.content.model.dto.MvLikesUserDto;
 import cool.zhang0.content.model.dto.ScrollResult;
+import cool.zhang0.content.model.message.MvPublishEmailMessage;
+import cool.zhang0.content.model.message.prototype.EmailMessage;
 import cool.zhang0.content.model.po.MvBase;
 import cool.zhang0.content.model.po.MvPublish;
 import cool.zhang0.content.model.po.MvPublishPre;
 import cool.zhang0.content.model.po.TsFollow;
 import cool.zhang0.content.service.MvPublishService;
-import cool.zhang0.content.service.TsFollowService;
 import cool.zhang0.exception.TuneSurgeException;
 import cool.zhang0.messagesdk.model.po.MqMessage;
 import cool.zhang0.messagesdk.service.MqMessageService;
@@ -31,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
@@ -76,10 +79,13 @@ public class MvPublishServiceImpl extends ServiceImpl<MvPublishMapper, MvPublish
     TsFollowMapper tsFollowMapper;
 
     @Resource
-    AuthServiceClient userLikedClient;
+    AuthServiceClient authServiceClient;
+
+    @Resource
+    RabbitTemplate rabbitTemplate;
 
     @Override
-    public RestResponse<String> publish(Long userId, Long mvId) {
+    public RestResponse<String> publish(Long userId, String nickname, Long mvId) {
         // 约束校验
         // 是否提交审核或审核通过
         MvBase mvBase = mvBaseMapper.selectById(mvId);
@@ -102,15 +108,25 @@ public class MvPublishServiceImpl extends ServiceImpl<MvPublishMapper, MvPublish
         tsFollowLambdaQueryWrapper.eq(TsFollow::getFollowUserId, userId);
         tsFollowLambdaQueryWrapper.select(TsFollow::getUserId);
         List<TsFollow> tsFollows = tsFollowMapper.selectList(tsFollowLambdaQueryWrapper);
+        List<Long> userIdList = new ArrayList<>();
         tsFollows.forEach(tsFollow -> {
             // 获取粉丝ID
             Long id = tsFollow.getUserId();
+            userIdList.add(id);
             final String key = "mv:feed:" + id;
             stringRedisTemplate.opsForZSet().add(key, mvId.toString(), System.currentTimeMillis());
         });
+        String[] emailList = authServiceClient.getEmailList(userIdList);
         // 消息异步执行 Email通知粉丝
-
-
+        final String exchange = "tunesurge.mv-publish-topic";
+        final String routeKey = "email.mv-publish";
+        MvPublishEmailMessage mvPublishEmailMessage = new MvPublishEmailMessage();
+        mvPublishEmailMessage.setTitle("您关注的UP主发布了新的MV");
+        mvPublishEmailMessage.setTo(emailList);
+        mvPublishEmailMessage.setUpName(nickname);
+        mvPublishEmailMessage.setMvName(mvBase.getName());
+        mvPublishEmailMessage.setDescription(mvBase.getDescription());
+        rabbitTemplate.convertAndSend(exchange, routeKey, mvPublishEmailMessage);
         return RestResponse.success();
     }
 
@@ -245,7 +261,7 @@ public class MvPublishServiceImpl extends ServiceImpl<MvPublishMapper, MvPublish
         List<Long> userIds = range.stream().map(Long::valueOf).collect(Collectors.toList());
         String userIdStr = StrUtil.join(",", userIds);
         // 根据用户ID查询用户
-        List<LikedUserDto> likedUserDtos = userLikedClient.likedSorted(new MvLikesUserDto(userIds, userIdStr));
+        List<LikedUserDto> likedUserDtos = authServiceClient.likedSorted(new MvLikesUserDto(userIds, userIdStr));
         return RestResponse.success(likedUserDtos);
     }
 

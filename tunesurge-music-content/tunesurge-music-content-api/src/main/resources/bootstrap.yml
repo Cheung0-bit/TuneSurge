@@ -27,5 +27,11 @@ spring:
           - data-id: feign-${spring.profiles.active}.yaml
             group: tunesurge-music-common
             refresh: true
+          - data-id: rabbitmq-${spring.profiles.active}.yaml
+            group: tunesurge-music-common
+            refresh: true
+          - data-id: email-${spring.profiles.active}.yaml
+            group: tunesurge-music-common
+            refresh: true
   profiles:
     active: dev
