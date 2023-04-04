@@ -173,7 +173,7 @@ public class MvPublishServiceImpl extends ServiceImpl<MvPublishMapper, MvPublish
     public RestResponse<MvPublish> queryMvCacheById(Long mvId) {
 
         // 先从缓存中查询
-        final String key = "mv:publish" + mvId;
+        final String key = "mv:publish:" + mvId;
         String jsonString = stringRedisTemplate.opsForValue().get(key);
         if (StringUtils.isNotEmpty(jsonString)) {
             // 解决缓存穿透 空数据直接返回

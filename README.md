@@ -57,7 +57,7 @@ MV作品发布后，相关信息会收到内容服务系统的记录持久化处
 | MySQL                | 8.0.30        |
 | Mybatis Plus         | 3.4.1         |
 | Knife4J              | 3.0.3         |
-| elasticsearch        | 7.12.1        |
+| Elasticsearch        | 7.12.1        |
 | kibana               | 7.12.1        |
 | Minio                | 3.4.2         |
 | Okhttp               | 4.8.1         |
@@ -81,4 +81,3 @@ MV作品发布后，相关信息会收到内容服务系统的记录持久化处
 ![tunesurge_media](https://0-bit.oss-cn-beijing.aliyuncs.com/tunesurge_media.png)
 
 ![tunesurge_users](https://0-bit.oss-cn-beijing.aliyuncs.com/tunesurge_users.png)
-

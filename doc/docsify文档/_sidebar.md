@@ -1,0 +1,12 @@
+* [首页](README)
+* [立项分析](module/project-analysis)
+* 技术架构
+  * [Base公共服务](module/base)
+  * [AuthServer认证中心服务](module/auth-server)
+  * [Gateway网关服务](module/gateway)
+  * [Content内容管理服务](module/content)
+  * [Media媒资管理服务](module/media)
+  * [MV发布](module/publish)
+  * [消息通知](module/message)
+  * [Swagger接口文档聚合](module/swagger)
+* [单机部署](deploy)
