@@ -38,7 +38,7 @@
 
 经典的RBAC数据库设计：
 
-![image-20230319195455365](https://0-bit.oss-cn-beijing.aliyuncs.com/image-20230319195455365.png)
+![tunesurge_users](https://0-bit.oss-cn-beijing.aliyuncs.com/tunesurge_users.png)
 
 权限集合存放在`ts_menu`中，该表的结构按照菜单的树形结构进行构建，方便后期与后台管理系统结合，实现角色权限的分配
 
